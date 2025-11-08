@@ -1,3 +1,5 @@
+# НУЖНО РАЗБИТЬ ВСЕ НА ОТДЕЛЬНЫЕ ПИТОН ФАЙЛЫ 
+
 from typing import Union
 from fastapi import FastAPI
 from pydantic.v1 import BaseModel
