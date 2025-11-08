@@ -1,0 +1,102 @@
+<!-- ПОКА ЧТО ПРОСТО HIML СТРАНИЦА, ДЕЙСТВИЯ ПОЛЬЗОВАТЕЛЯ НЕ РАБОТАЮТ -->
+<!DOCTYPE html>  <!-- -->
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title> Онлайн журнал для вузов </title>
+    <script src="https://st.max.ru/js/max-web-app.js"></script>
+    <link rel="stylesheet" href="https://st.max.ru/css/max-ui.css">
+
+    <style>
+        body {
+            background: #f5f6fa;
+            font-family: 'Arial', sans-serif;
+        }
+        .max-container {
+            max-width: 600px;
+            margin: 30px auto;
+        }
+        .max-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .max-step {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .hidden { display: none; }
+    </style>
+
+</head>
+<body>
+    <div class="max-container">
+        <div class="max-header">
+            <h1> Электронный журнал </h1>
+            <p> Система учёта посещаемости вуза </p>
+        </div>
+
+        <!-- Шаг 1: ВУЗ -->
+        <div id="step1" class="max-step">
+            <div class="max-form-group">
+                <label class="max-label" for="university">Выберите ваш вуз:</label>
+                <select class="max-select" id="university">
+                    <option value="">-- Выберите вуз --</option>
+                    <option value="msu">МГУ им. М.В. Ломоносова</option>
+                    <option value="mpei">МЭИ</option>
+                    <option value="mipt">МФТИ</option>
+                </select>
+            </div>
+            <button class="max-button primary" onclick="nextStep(2)"> Далее </button>
+        </div>
+
+        <!-- Шаг 2: Факультет -->
+        <div id="step2" class="max-step hidden">
+            <div class="max-form-group">
+                <label class="max-label" for="faculty">Выберите факультет:</label>
+                <select class="max-select" id="faculty">
+                    <option value="">-- Сначала выберите вуз --</option>
+                </select>
+            </div>
+            <button class="max-button primary" onclick="nextStep(3)">Далее</button>
+            <button class="max-button secondary" onclick="prevStep(1)">Назад</button>
+        </div>
+
+        <!-- Шаг 3: Роль -->
+        <div id="step3" class="max-step hidden">
+            <div class="max-form-group">
+                <label class="max-label" for="role">Выберите вашу роль:</label>
+                <select class="max-select" id="role">
+                    <option value="">-- Выберите роль --</option>
+                    <option value="student">Студент</option>
+                    <option value="teacher">Преподаватель</option>
+                    <option value="headman">Староста</option>
+                </select>
+            </div>
+            <button class="max-button primary" onclick="completeRegistration()">Завершить регистрацию</button>
+            <button class="max-button secondary" onclick="prevStep(2)">Назад</button>
+        </div>
+
+        <!-- Шаг 4: Завершение -->
+        <div id="step4" class="max-step hidden">
+            <div class="max-card">
+                <div class="max-card-header">
+                    <h3>✅ Регистрация завершена</h3>
+                </div>
+                <div class="max-card-content" id="userInfo"></div>
+            </div>
+            <button class="max-button primary" onclick="enterSystem()">Войти в систему</button>
+            <button class="max-button secondary" onclick="prevStep(3)">Назад</button>
+        </div>
+
+        <div id="error" style="color:red; margin-top:15px;"></div>
+    </div>
+
+    <script> 
+        // Тут будет работа с нашим сервером
+        // (fetch('/register', {method: 'POST', body: JSON.stringify(...)}))
+    </script>
+
+</body>
+</html>
