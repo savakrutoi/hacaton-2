@@ -38,13 +38,8 @@ class User(Base):
     gruppa_prepod: Mapped[list[int]] = mapped_column(JSON, default=[])
     grupa_starosta: Mapped[int] = mapped_column(Integer)
 
-
-    addresses: Mapped[List["UNIVER"]] = relationship(
-        back_populates="univer", cascade="all, delete-orphan"
-    ) # вот как с адресами мне работать
-
-    def __repr__(self) -> str:
-        return f"User(id={self.id!r}, name={self.name!r}, fullname={self.fullname!r})"
+    def __repr__(self):
+        return f"User(id={self.id}, name={self.name}, name_2={self.name_2}, rol={self.rol})"
 
 # class UNIVER(Base):
 #     __tablename__ = "UNIVER"

@@ -15,7 +15,7 @@ router = APIRouter()
 # написать добовление в базу данны
 @router.post("/vk_register/")
 def vk_register(vk_user: Vkuser, db: Session = Depends(get_db)):
-    return create_user(db, vk_user.dict())
+    return create_user(db, vk_user)  # без .dict()
 
 # @router.post("/vk_register/")
 # def vk_register(vk_user: Vkuser, db: Session = Depends(get_db)):
