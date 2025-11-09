@@ -87,8 +87,117 @@
     </div>
 
     <script> 
-        // Тут будет работа с нашим сервером
-        // (fetch('/register', {method: 'POST', body: JSON.stringify(...)}))
+        const SERVER_URL = "http://127.0.0.1:8000"; //адрес в корень 
+        let userData = {};
+    
+        function nextStep(step) {
+            document.querySelectorAll('.max-step').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`step${step}`).classList.remove('hidden');
+        }
+    
+        function prevStep(step) {
+            document.querySelectorAll('.max-step').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`step${step}`).classList.remove('hidden');
+        }
+    
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                MaxWebApp.ready();
+                const initData = MaxWebApp.initDataUnsafe;
+    
+                if (!initData || !initData.user) {
+                    document.getElementById("error").innerText = "Не удалось получить данные пользователя из MAX.";
+                    return;
+                }
+    
+                const user = initData.user;
+                const query_id = initData.query_id || "unknown";
+    
+                userData = {
+                    query_id,
+                    user_id: user.id,
+                    name: user.first_name,
+                    surname: user.last_name
+                };
+    
+                // Проверяем регистрацию
+                const checkResponse = await fetch(`${SERVER_URL}/auth/check_user?query_id=${query_id}`); //эндпоинт на роутере auth на сервере
+                const checkData = await checkResponse.json();
+    
+                if (checkData.registered) {
+                    document.getElementById("userInfo").innerHTML = `
+                        <p><b>${user.first_name} ${user.last_name}</b></p>
+                        <p>Вы уже зарегистрированы.</p>`;
+                    nextStep(3);
+                } else {
+                    await fetch(`${SERVER_URL}/auth/register`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(userData)
+                    });
+                }
+    
+            } catch (err) {
+                console.error(err);
+                document.getElementById("error").innerText = "Ошибка при инициализации приложения.";
+            }
+        });
+    
+        async function loadGroups() {
+            const role = document.getElementById("role").value;
+            const univer = document.getElementById("university").value;
+    
+            if (!role || !univer) return;
+    
+            const groupSection = document.getElementById("groupSection");
+            const groupSelect = document.getElementById("group");
+            groupSection.classList.remove("hidden");
+    
+            // Загружаем список групп с сервера
+            const response = await fetch(`${SERVER_URL}/auth/get_groups?role=${role}&univer=${univer}`);
+            const data = await response.json();
+    
+            groupSelect.innerHTML = "";
+            data.groups.forEach(g => {
+                const opt = document.createElement("option");
+                opt.value = g.id;
+                opt.textContent = g.number;
+                groupSelect.appendChild(opt);
+            });
+        }
+    
+        async function completeRegistration() {
+            const univer = document.getElementById("university").value;
+            const role = document.getElementById("role").value;
+            const group_id = document.getElementById("group").value;
+    
+            if (!univer || !role) {
+                document.getElementById("error").innerText = "Выберите все данные.";
+                return;
+            }
+    
+            userData.univer = univer;
+            userData.role = role;
+            userData.group_id = group_id;
+    
+            const response = await fetch(`${SERVER_URL}/auth/update_user`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(userData)
+            });
+    
+            const result = await response.json();
+            if (result.status === "ok") {
+                document.getElementById("userInfo").innerHTML = `
+                    <p><b>${userData.name} ${userData.surname}</b></p>
+                    <p>Роль: ${userData.role}</p>
+                    <p>ВУЗ: ${userData.univer}</p>
+                    <p>Группа: ${result.group_number}</p>`;
+                nextStep(3);
+            } else {
+                document.getElementById("error").innerText = "Ошибка при сохранении данных.";
+            }
+        }
     </script>
 
 </body>
