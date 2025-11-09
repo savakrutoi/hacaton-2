@@ -1,7 +1,7 @@
 # работа с базаой данных потому что надо первую инфу по юзеру сохранять куда то фамилия имя
 # выбор универа
 
-from sqlalchemy import create_engine, Integer, ARRAY
+from sqlalchemy import create_engine, Integer, Column, JSON
 from typing import List
 from typing import Optional
 from sqlalchemy import ForeignKey
@@ -11,7 +11,7 @@ from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 
-engine = create_engine("sqlite:///mydatabase.db", echo=True)
+
 
 class Base(DeclarativeBase):
     pass
@@ -26,11 +26,9 @@ class MSUGroup(Base):
     user_ids = Column(JSON, default=[])         # список пользователей (из таблицы User), пока пустой
 
 # Создаем базу данных для МГУ
-engine = create_engine("sqlite:///msu.db", echo=True)
+
 SessionLocal = sessionmaker(bind=engine)
 Base.metadata.create_all(engine)
-
-
 
 
 
@@ -42,7 +40,7 @@ class User(Base):
     name_2: Mapped[str] = mapped_column(String(30))
     rol = Mapped[str] = mapped_column(String(30))
     univer = Mapped[str] = mapped_column(String(30))
-    gruppa_prepod: Mapped[list[int]] = mapped_column(ARRAY(Integer))  # если у нас студент то мы сохрняем grupa_starosta если препод gruppa_prepod
+    gruppa_prepod = Column(JSON, default=[])  # если у нас студент то мы сохрняем grupa_starosta если препод gruppa_prepod
     grupa_starosta = Mapped[int] = mapped_column(primary_key=True)
 
 
