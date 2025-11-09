@@ -12,5 +12,9 @@ from app.models_orm import User
 # )
 def create_user(db: Session, user_data: dict):
     user = User(**user_data)
-    db.add(max_id)
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+
+
 
