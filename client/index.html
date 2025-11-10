@@ -63,10 +63,11 @@
                 </select>
             </div>
 
-            <!-- Если студент или преподаватель — показываем группы -->
+            <!-- показываем группы -->
             <div class="max-form-group hidden" id="groupSection">
-                <label class="max-label" for="group">Выберите группу:</label>
-                <select class="max-select" id="group"></select>
+                <label class="max-label" for="group">Выберите группу(ы):</label>
+                <select class="max-select" id="group" multiple></select>
+                <small id="groupHint" style="color: gray; display: block; margin-top: 5px;"></small>
             </div>
 
             <button class="max-button primary" onclick="completeRegistration()">Завершить регистрацию</button>
