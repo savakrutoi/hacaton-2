@@ -62,16 +62,17 @@
                     <option value="headman">Староста</option>
                 </select>
             </div>
-    
+
+            <!-- Если студент или преподаватель — показываем группы -->
             <div class="max-form-group hidden" id="groupSection">
                 <label class="max-label" for="group">Выберите группу:</label>
                 <select class="max-select" id="group"></select>
             </div>
-    
+
             <button class="max-button primary" onclick="completeRegistration()">Завершить регистрацию</button>
             <button class="max-button secondary" onclick="prevStep(1)">Назад</button>
         </div>
-    
+
         <!-- Шаг 3: Завершение -->
         <div id="step3" class="max-step hidden">
             <div class="max-card">
@@ -82,7 +83,7 @@
             </div>
             <button class="max-button primary" onclick="enterSystem()">Войти в систему</button>
         </div>
-    
+
         <div id="error" style="color:red; margin-top:15px;"></div>
     </div>
 
