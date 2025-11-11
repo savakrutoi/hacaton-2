@@ -105,6 +105,7 @@
         
     document.addEventListener("DOMContentLoaded", async () => {
         try {
+            //инициализация max bridge
             MaxWebApp.ready();
             const initData = MaxWebApp.initDataUnsafe;
 
@@ -154,7 +155,7 @@
     
         // Загружаем список групп с сервера
         try {
-            const response = await fetch(`${SERVER_URL}/auth/get_groups?role=${role}&univer=${univer}`);
+            const response = await fetch(`${SERVER_URL}/auth/get_groups?role=${role}&univer=${univer}`); //ПЕРЕДЕЛАТЬ АДРЕС
             const data = await response.json();
     
             groupSelect.innerHTML = "";
@@ -165,7 +166,7 @@
                 groupSelect.appendChild(opt);
             });
         } catch (err) {
-            console.error(err);
+            console.error("Ошибка загрузки групп:", err);
             document.getElementById("error").innerText = "Ошибка загрузки групп.";
         }
     }
@@ -195,19 +196,29 @@
         userData.group_ids = selectedGroups;
     
         try {
-            const response = await fetch(`${SERVER_URL}/auth/update_user`, {
+            console.log("Отправляем данные на сервер:", userData);
+            
+            const response = await fetch(`${SERVER_URL}/auth/vk_register/`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(userData)
             });
-    
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
             const result = await response.json();
+             console.log("Ответ от сервера:", result);
+            
             if (result.status === "ok") {
+                document.getElementById("error").innerText = "";
                 document.getElementById("userInfo").innerHTML = `
                     <p><b>${userData.name} ${userData.surname}</b></p>
-                    <p>Роль: ${userData.role}</p>
-                    <p>ВУЗ: ${userData.univer}</p>
-                    <p>Группы: ${selectedGroups.join(", ")}</p>`;
+                    <p><strong>Роль:</strong> ${role === 'student' ? 'Студент' : role === 'teacher' ? 'Преподаватель' : 'Староста'}</p>
+                    <p><strong>ВУЗ:</strong> ${univer}</p>
+                    <p><strong>Группы:</strong> ${selectedGroups.join(", ")}</p>
+                    <p style="color: green; margin-top: 10px;">✅ Регистрация завершена успешно!</p>`;
                 nextStep(3);
             } else {
                 document.getElementById("error").innerText = "Ошибка при сохранении данных.";
